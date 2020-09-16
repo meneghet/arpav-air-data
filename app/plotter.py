@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 
+
 def data4plot(my_data, my_t, year, TW):
     # t
     t = my_t[year]
@@ -15,3 +16,10 @@ def data4plot(my_data, my_t, year, TW):
     x = np.arange(0,len(y),1)
     
     return t, x, y
+
+
+def data2df(my_data, my_t, year, TW):
+    t, x, y = data4plot(my_data, my_t, year, TW)
+    dict = {'time': t, 'y': y}
+    df = pd.DataFrame(data=dict)
+    return df

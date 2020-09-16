@@ -8,9 +8,10 @@ from bokeh.resources import INLINE
 import numpy as np
 
 from app.get_data import get_data
-from app.plotter import data4plot
+from app.plotter import data4plot, data2df
 
-from bokeh.models import CustomJS, Select
+from bokeh.models import CustomJS, Select, ColumnDataSource
+from bokeh.models.widgets import RadioButtonGroup
 from bokeh.layouts import column, row
 
 
@@ -58,3 +59,10 @@ def index():
         css_resources=css_resources,
     )
     return html
+    
+
+
+
+
+
+

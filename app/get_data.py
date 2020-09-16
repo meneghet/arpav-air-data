@@ -27,3 +27,5 @@ def get_data(provincia, location, year_range, quality_idx):
         my_t[year] = df_.index
     
     return my_data, my_t
+
+
