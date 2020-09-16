@@ -10,6 +10,9 @@ import numpy as np
 from app.get_data import get_data
 from app.plotter import data4plot
 
+from bokeh.models import CustomJS, Select
+from bokeh.layouts import column
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -24,20 +27,25 @@ def index():
 
     year = 2019
     t, x, y = data4plot(my_data, my_t, year, TW)
-
-    fig = figure(plot_width=600, plot_height=600)
+    
+    
+    
+    fig = figure(plot_width=600, plot_height=600, title='abc')
     fig.line(
         x=x,
         y=y,
         color='navy'
     )
+    
+    select = Select(title="Option:", value="foo", options=["foo", "bar", "baz", "quux"])
+    select.js_link('value', fig, 'title')
 
     # grab the static resources
     js_resources = INLINE.render_js()
     css_resources = INLINE.render_css()
 
     # render template
-    script, div = components(fig)
+    script, div = components(column(select, fig))
     html = render_template(
         'index.html',
         plot_script=script,
