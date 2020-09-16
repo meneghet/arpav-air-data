@@ -4,20 +4,31 @@ from flask import render_template
 from bokeh.embed import components
 from bokeh.plotting import figure
 from bokeh.resources import INLINE
-# from bokeh.util.string import encode_utf8
+
+import numpy as np
+
+from app.get_data import get_data
+from app.plotter import data4plot
 
 @app.route('/')
 @app.route('/index')
 def index():
 
-    # init a basic bar chart:
-    # http://bokeh.pydata.org/en/latest/docs/user_guide/plotting.html#bars
+    provincia = 'padova'
+    location = 'PD - Arcella'
+    year_range = np.arange(2013,2020+1)
+    quality_idx = 'NO2'
+    TW = 30
+
+    my_data, my_t = get_data(provincia, location, year_range, quality_idx)
+
+    year = 2019
+    t, x, y = data4plot(my_data, my_t, year, TW)
+
     fig = figure(plot_width=600, plot_height=600)
-    fig.vbar(
-        x=[1, 2, 3, 4],
-        width=0.5,
-        bottom=0,
-        top=[1.7, 2.2, 4.6, 3.9],
+    fig.line(
+        x=x,
+        y=y,
         color='navy'
     )
 
