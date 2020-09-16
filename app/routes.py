@@ -9,10 +9,6 @@ from bokeh.resources import INLINE
 @app.route('/')
 @app.route('/index')
 def index():
-    return "Hello, World!"
-
-@app.route('/bokeh')
-def bokeh():
 
     # init a basic bar chart:
     # http://bokeh.pydata.org/en/latest/docs/user_guide/plotting.html#bars
