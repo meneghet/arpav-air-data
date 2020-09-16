@@ -11,9 +11,11 @@ from app.get_data import get_data
 from app.plotter import data4plot
 from bokeh.layouts import column, row, widgetbox
 
+from bokeh.io import curdoc
+
 # from bokeh.io import curdoc
 from bokeh.models import ColumnDataSource
-from bokeh.models.widgets import Slider, TextInput
+from bokeh.models.widgets import RadioButtonGroup
 
 import pandas as pd
 
@@ -31,35 +33,50 @@ TW = 30
 
 my_data, my_t = get_data(provincia, location, year_range, quality_idx)
 
+
 year = 2019
 t, x, y = data4plot(my_data, my_t, year, TW)
+d2019 = {'time': t, 'y': y}
+df2019 = pd.DataFrame(data=d2019)
 
-t = pd.to_datetime(t)
-# print(t)
+year = 2018
+t, x, y = data4plot(my_data, my_t, year, TW)
+d2018 = {'time': t, 'y': y}
+df2018 = pd.DataFrame(data=d2018)
+
+year = 2017
+t, x, y = data4plot(my_data, my_t, year, TW)
+d2017 = {'time': t, 'y': y}
+df2017 = pd.DataFrame(data=d2017)
 
 
-# Set up widgets
-text = TextInput(title="title", value='')
-offset = Slider(title="offset", value=0.0, start=-5.0, end=5.0, step=0.1)
-amplitude = Slider(title="amplitude", value=1.0, start=-5.0, end=5.0)
-phase = Slider(title="phase", value=0.0, start=0.0, end=2*np.pi)
-freq = Slider(title="frequency", value=1.0, start=0.1, end=5.1)
 
+LABELS = ["2017", "2018", "2019"]
+radio_button_group = RadioButtonGroup(labels=LABELS, active=0)
+select = Select(title="monthly csv-s",  options=LABELS)
 
-fig = figure(plot_width=600, plot_height=600, title='abc')
-fig.line(
-    x=t,
-    y=y,
-    color='navy'
-    )
-
-# Set up callbacks
-def update_title(attrname, old, new):
-    fig.title.text = text.value
-
-text.on_change('value', update_title)
+source = ColumnDataSource(df2017)
+p = figure(plot_width=600, plot_height=300, title='abc')
+r = p.line(x='time', y='y', color='navy',
+         source = source)
+         
+def update_plot(attrname, old, new):
     
-# Set up layouts and add to document
-inputs = widgetbox(text, offset, amplitude, phase, freq)
+    if select.value == '2017':
+        newSource = df2017
+    if select.value == '2018':
+        newSource = df2018
+    if select.value == '2019':
+        newSource = df2019
+    source.data =  newSource
+    
+select.on_change('value', update_plot)
 
-show(row(inputs, fig))
+layout = column(row(select, width=400), p)
+
+
+# Set up layouts and add to document
+# show(layout)
+curdoc().add_root(layout)
+
+
