@@ -27,23 +27,22 @@ def index():
     TW = 30
 
     my_data, my_t = get_data(provincia, location, year_range, quality_idx)
-
-    year = 2019
-    t, x, y = data4plot(my_data, my_t, year, TW)
-    
-    p = figure(plot_width=600, plot_height=600, title='abc')
-    p.line(
-        x=x,
-        y=y,
-        color='navy'
-    )
-    
+    df_year = {}
+    for year in [2017, 2018, 2019]:
+        df_year[year] = data2df(my_data, my_t, year, TW)
+        
     LABELS = ["2017", "2018", "2019"]
     select = Select(title="monthly csv-s",  options=LABELS)
-    layout = column(row(select, width=400), p)
     
-    select = Select(title="Option:", value="foo", options=["foo", "bar", "baz", "quux"])
-    select.js_link('value', p, 'title')
+    source = ColumnDataSource(df_year[2017])
+    p = figure(plot_width=600, plot_height=300, title=F'{quality_idx} in {provincia} ({location})')
+    r = p.line(x='time', y='y', color='navy',
+             source = source)
+             
+    def update_plot(attrname, old, new):
+        source.data =  df_year[int(select.value)]
+        
+    select.on_change('value', update_plot)
 
     # grab the static resources
     js_resources = INLINE.render_js()
